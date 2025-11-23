@@ -1,5 +1,6 @@
 # app.py - نسخه کامل و مستقل (بدون نیاز به فایل‌های دیگه)
 from flask import Flask, render_template, request, redirect, url_for, flash
+import os
 import sqlite3
 from datetime import datetime
 import jdatetime
@@ -165,3 +166,4 @@ def submit():
 if __name__ == "__main__":
     init_db()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
+
