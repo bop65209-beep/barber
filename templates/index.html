@@ -1,0 +1,65 @@
+<!-- web_version/templates/index.html -->
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آرایشگاه مردانه مدرن - رزرو آنلاین</title>
+    <style>
+        body { font-family: Tahoma; background: #f4f4f4; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        .week { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
+        .day-btn { padding: 15px; text-align: center; background: #3498db; color: white; border-radius: 10px; text-decoration: none; }
+        .day-btn:hover { background: #2980b9; }
+        .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .slot-btn { padding: 12px; background: #27ae60; color: white; border: none; border-radius: 8px; }
+        .slot-btn:disabled { background: #95a5a6; }
+        input, button { padding: 12px; margin: 10px 0; width: 100%; border-radius: 8px; border: 1px solid #ddd; }
+        button { background: #e74c3c; color: white; font-size: 16px; }
+        .alert { padding: 10px; background: #f39c12; color: white; border-radius: 8px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>آرایشگاه مردانه مدرن</h1>
+    <p style="text-align:center;">رزرو وقت آنلاین</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="alert">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if not selected_date %}
+        <div class="week">
+            {% for day, date in week %}
+                <a href="/book/{{ date }}/{{ day }}" class="day-btn">{{ day }}<br>{{ date }}</a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h3>زمان‌های آزاد برای {{ day_name }} ({{ selected_date }})</h3>
+        <div class="slots">
+            {% for slot in slots %}
+                <form method="POST" action="/submit">
+                    <input type="hidden" name="date" value="{{ selected_date }}">
+                    <input type="hidden" name="time_slot" value="{{ slot }}">
+                    <button type="submit" class="slot-btn">{{ slot }}</button>
+                </form>
+            {% endfor %}
+        </div>
+
+        <form method="POST" action="/submit">
+            <input type="hidden" name="date" value="{{ selected_date }}">
+            <input type="hidden" name="time_slot" value="{{ slots[0] if slots else '' }}">
+            <input type="text" name="name" placeholder="نام و نام خانوادگی" required>
+            <input type="text" name="phone" placeholder="09123456789" required>
+            <button type="submit">ثبت نهایی رزرو</button>
+        </form>
+        <a href="/">بازگشت به تقویم</a>
+    {% endif %}
+</div>
+</body>
+</html>
